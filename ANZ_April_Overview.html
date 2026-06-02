@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIGO Live ANZ · April Events Overview</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:   #0D1B2A;
+    --navy2:  #1B2F45;
+    --navy3:  #243B55;
+    --accent: #00C9A7;
+    --gold:   #FFB627;
+    --coral:  #FF6B6B;
+    --blue:   #4DA6FF;
+    --purple: #A78BFA;
+    --brown:  #D4956A;
+    --white:  #F0F4F8;
+    --muted:  rgba(240,244,248,0.5);
+    --border: rgba(255,255,255,0.08);
+
+    --nss:   #4DA6FF;
+    --tls:   #00C9A7;
+    --stgn:  #A78BFA;
+    --tlh:   #D4956A;
+    --mnf:   #FF6B6B;
+  }
+
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--navy2);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px 24px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+  .header-left {}
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 4px;
+    font-style: italic;
+  }
+  .header-right {
+    text-align: right;
+  }
+  .badge {
+    display: inline-block;
+    background: rgba(0,201,167,0.15);
+    color: var(--accent);
+    border: 1px solid rgba(0,201,167,0.3);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .header-meta {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ── MAIN GRID ── */
+  .main {
+    padding: 28px 40px 40px;
+    display: grid;
+    gap: 20px;
+  }
+
+  /* ── KPI STRIP ── */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+  }
+  .kpi {
+    background: var(--navy2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    border-top: 3px solid var(--accent);
+    transition: transform .15s;
+  }
+  .kpi:hover { transform: translateY(-2px); }
+  .kpi.nss { border-top-color: var(--nss); }
+  .kpi.tls { border-top-color: var(--tls); }
+  .kpi.stgn { border-top-color: var(--stgn); }
+  .kpi.tlh { border-top-color: var(--tlh); }
+  .kpi.mnf { border-top-color: var(--mnf); }
+  .kpi-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .kpi-number {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 4px;
+    font-family: 'DM Mono', monospace;
+  }
+  .kpi-sub {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .kpi-beans {
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 4px;
+  }
+  .kpi.nss  .kpi-beans { color: var(--nss); }
+  .kpi.tls  .kpi-beans { color: var(--tls); }
+  .kpi.stgn .kpi-beans { color: var(--stgn); }
+  .kpi.tlh  .kpi-beans { color: var(--tlh); }
+  .kpi.mnf  .kpi-beans { color: var(--mnf); }
+
+  /* ── CHART ROW ── */
+  .charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .chart-card {
+    background: var(--navy2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .chart-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .chart-title-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+  .chart-title-dot.gold  { background: var(--gold); }
+  .chart-title-dot.blue  { background: var(--blue); }
+  .chart-title-dot.coral { background: var(--coral); }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .chart-wrap { position: relative; width: 100%; }
+
+  /* ── BOTTOM ROW ── */
+  .bottom-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* ── HIGHLIGHTS ── */
+  .highlights {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .highlight-card {
+    background: var(--navy2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .hl-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .hl-icon.teal   { background: rgba(0,201,167,.15); }
+  .hl-icon.purple { background: rgba(167,139,250,.15); }
+  .hl-icon.coral  { background: rgba(255,107,107,.15); }
+  .hl-icon.gold   { background: rgba(255,182,39,.15); }
+  .hl-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+  .hl-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+  }
+  .hl-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 16px 40px 24px;
+    font-size: 11px;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="eyebrow">Bigo Live ANZ &nbsp;·&nbsp; Content Events</div>
+    <div class="title">April Events Performance Overview</div>
+    <div class="subtitle">Source: APRIL EVENT DATA ANALYSIS tab &nbsp;·&nbsp; Generated May 2026</div>
+  </div>
+  <div class="header-right">
+    <div class="badge">5 Events</div>
+    <div class="header-meta">192 host appearances &nbsp;·&nbsp; 4 ANZ-managed + 1 Overseas</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- KPI STRIP -->
+  <div class="kpi-strip">
+    <div class="kpi nss">
+      <div class="kpi-label">NSS</div>
+      <div class="kpi-number">70</div>
+      <div class="kpi-sub">unique hosts</div>
+      <div class="kpi-beans">59,115 beans</div>
+    </div>
+    <div class="kpi tls">
+      <div class="kpi-label">TLS</div>
+      <div class="kpi-number">50</div>
+      <div class="kpi-sub">unique hosts</div>
+      <div class="kpi-beans">251,100 beans</div>
+    </div>
+    <div class="kpi stgn">
+      <div class="kpi-label">STGN</div>
+      <div class="kpi-number">9</div>
+      <div class="kpi-sub">hosts · overseas</div>
+      <div class="kpi-beans">37,502 beans</div>
+    </div>
+    <div class="kpi tlh">
+      <div class="kpi-label">Themed LH</div>
+      <div class="kpi-number">44</div>
+      <div class="kpi-sub">unique hosts</div>
+      <div class="kpi-beans">51,100 beans</div>
+    </div>
+    <div class="kpi mnf">
+      <div class="kpi-label">MNF</div>
+      <div class="kpi-number">19</div>
+      <div class="kpi-sub">unique hosts</div>
+      <div class="kpi-beans">123,200 beans</div>
+    </div>
+  </div>
+
+  <!-- CHARTS ROW 1 -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title"><span class="chart-title-dot gold"></span>Top 10 hosts by beans — all events</div>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-dot" style="background:var(--nss)"></span>NSS</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--tls)"></span>TLS</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--stgn)"></span>STGN</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--tlh)"></span>Themed LH</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--mnf)"></span>MNF</span>
+      </div>
+      <div class="chart-wrap" style="height:320px;"><canvas id="beansChart" role="img" aria-label="Top 10 hosts by beans. bebong2316 STGN 25313 beans leads."></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title"><span class="chart-title-dot blue"></span>Top 10 hosts by ACU — all events</div>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-dot" style="background:var(--tls)"></span>TLS (dominates top 10)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--stgn)"></span>STGN</span>
+      </div>
+      <div class="chart-wrap" style="height:320px;"><canvas id="acuChart" role="img" aria-label="Top 10 hosts by ACU. Qtpie29 TLS 18379 ACU leads."></canvas></div>
+    </div>
+  </div>
+
+  <!-- CHARTS ROW 2 -->
+  <div class="bottom-row">
+    <div class="charts-row" style="grid-template-columns:1fr 1fr;">
+      <div class="chart-card">
+        <div class="chart-title"><span class="chart-title-dot"></span>Total beans per event</div>
+        <div class="chart-wrap" style="height:200px;"><canvas id="eventBeansChart" role="img" aria-label="TLS leads with 251100 total beans."></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title"><span class="chart-title-dot coral"></span>Top 8 agencies by slots</div>
+        <div class="chart-wrap" style="height:200px;"><canvas id="agencyChart" role="img" aria-label="Black Cats Agency leads with 50 slots."></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HIGHLIGHTS -->
+  <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:12px;">
+    <div class="highlight-card">
+      <div class="hl-icon teal">👁️</div>
+      <div>
+        <div class="hl-label">Highest ACU — all events</div>
+        <div class="hl-value">Qtpie29 · TLS</div>
+        <div class="hl-sub">18,379 ACU · Fire Dragon Agency</div>
+      </div>
+    </div>
+    <div class="highlight-card">
+      <div class="hl-icon purple">🫘</div>
+      <div>
+        <div class="hl-label">Highest beans — all events</div>
+        <div class="hl-value">bebong2316 · STGN</div>
+        <div class="hl-sub">25,313 beans · MGM Agency</div>
+      </div>
+    </div>
+    <div class="highlight-card">
+      <div class="hl-icon coral">🏆</div>
+      <div>
+        <div class="hl-label">Most profitable event</div>
+        <div class="hl-value">TLS · 251,100 beans</div>
+        <div class="hl-sub">4× more than next event (MNF)</div>
+      </div>
+    </div>
+    <div class="highlight-card">
+      <div class="hl-icon gold">🏅</div>
+      <div>
+        <div class="hl-label">Top agency by slots</div>
+        <div class="hl-value">Black Cats Agency</div>
+        <div class="hl-sub">50 slots across all events</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  BIGO Live ANZ &nbsp;·&nbsp; Events Content Team &nbsp;·&nbsp; April 2026 &nbsp;·&nbsp; Data source: ANZ_Broadcasters_Agency.xlsx
+</div>
+
+<script>
+const EV = { NSS:'#4DA6FF', TLS:'#00C9A7', STGN:'#A78BFA', 'Themed LH':'#D4956A', MNF:'#FF6B6B' };
+const gridC = 'rgba(255,255,255,0.07)';
+const txtC  = 'rgba(240,244,248,0.55)';
+
+const beansD = [
+  {l:'bebong2316 (STGN)',  v:25313, ev:'STGN'},
+  {l:'AuntyReal61 (MNF)',  v:12600, ev:'MNF'},
+  {l:'independ3nt (TLS)',  v:10800, ev:'TLS'},
+  {l:'Qtpie29 (TLS)',      v:10800, ev:'TLS'},
+  {l:'bebong2316 (TLS)',   v:10200, ev:'TLS'},
+  {l:'Yumi012024 (TLS)',   v:9900,  ev:'TLS'},
+  {l:'MisHunilicious (TLS)',v:9800, ev:'TLS'},
+  {l:'Bebong2316 (MNF)',   v:9700,  ev:'MNF'},
+  {l:'00Hope00 (TLS)',     v:9700,  ev:'TLS'},
+  {l:'Trinni (MNF)',       v:9600,  ev:'MNF'},
+];
+
+new Chart(document.getElementById('beansChart'), {
+  type:'bar',
+  data:{
+    labels: beansD.map(d=>d.l),
+    datasets:[{ data:beansD.map(d=>d.v), backgroundColor:beansD.map(d=>EV[d.ev]), borderRadius:4, borderSkipped:false }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false, indexAxis:'y',
+    plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>' '+c.parsed.x.toLocaleString()+' beans'},
+      backgroundColor:'#1B2F45', titleColor:'#F0F4F8', bodyColor:'rgba(240,244,248,0.7)', borderColor:'rgba(255,255,255,0.1)', borderWidth:1}},
+    scales:{
+      x:{grid:{color:gridC}, border:{display:false}, ticks:{color:txtC, font:{family:'DM Mono',size:11}, callback:v=>v>=1000?(v/1000).toFixed(0)+'k':v}},
+      y:{grid:{display:false}, border:{display:false}, ticks:{color:'rgba(240,244,248,0.75)', font:{family:'DM Sans',size:11}}}
+    }
+  }
+});
+
+const acuD = [
+  {l:'Qtpie29 (TLS)',       v:18379, ev:'TLS'},
+  {l:'BSA_Jhen (TLS)',      v:16222, ev:'TLS'},
+  {l:'independ3nt (STGN)',  v:15633, ev:'STGN'},
+  {l:'independ3nt (TLS)',   v:14365, ev:'TLS'},
+  {l:'bebong2316 (TLS)',    v:12951, ev:'TLS'},
+  {l:'AuntyReal61 (TLS)',   v:11037, ev:'TLS'},
+  {l:'Laycedup (TLS)',      v:10042, ev:'TLS'},
+  {l:'MisHunilicious (TLS)',v:8967,  ev:'TLS'},
+  {l:'SouljahzVibe (TLS)',  v:7378,  ev:'TLS'},
+  {l:'00Hope00 (TLS)',      v:7268,  ev:'TLS'},
+];
+
+new Chart(document.getElementById('acuChart'), {
+  type:'bar',
+  data:{
+    labels: acuD.map(d=>d.l),
+    datasets:[{ data:acuD.map(d=>d.v), backgroundColor:acuD.map(d=>EV[d.ev]), borderRadius:4, borderSkipped:false }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false, indexAxis:'y',
+    plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>' '+c.parsed.x.toLocaleString()+' ACU'},
+      backgroundColor:'#1B2F45', titleColor:'#F0F4F8', bodyColor:'rgba(240,244,248,0.7)', borderColor:'rgba(255,255,255,0.1)', borderWidth:1}},
+    scales:{
+      x:{grid:{color:gridC}, border:{display:false}, ticks:{color:txtC, font:{family:'DM Mono',size:11}, callback:v=>v>=1000?(v/1000).toFixed(0)+'k':v}},
+      y:{grid:{display:false}, border:{display:false}, ticks:{color:'rgba(240,244,248,0.75)', font:{family:'DM Sans',size:11}}}
+    }
+  }
+});
+
+new Chart(document.getElementById('eventBeansChart'), {
+  type:'bar',
+  data:{
+    labels:['TLS','MNF','Themed LH','NSS','STGN'],
+    datasets:[{ data:[251100,123200,51100,59115,37502],
+      backgroundColor:['#00C9A7','#FF6B6B','#D4956A','#4DA6FF','#A78BFA'],
+      borderRadius:4, borderSkipped:false }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>' '+c.parsed.y.toLocaleString()+' beans'},
+      backgroundColor:'#1B2F45', titleColor:'#F0F4F8', bodyColor:'rgba(240,244,248,0.7)', borderColor:'rgba(255,255,255,0.1)', borderWidth:1}},
+    scales:{
+      x:{grid:{display:false}, border:{display:false}, ticks:{color:'rgba(240,244,248,0.75)', font:{family:'DM Sans',size:11}}},
+      y:{grid:{color:gridC}, border:{display:false}, ticks:{color:txtC, font:{family:'DM Mono',size:11}, callback:v=>v>=1000?(v/1000).toFixed(0)+'k':v}}
+    }
+  }
+});
+
+new Chart(document.getElementById('agencyChart'), {
+  type:'bar',
+  data:{
+    labels:['Black Cats','D WILL','NOYPI','Angels & Demons','LeadOr','Chain Agency','MGM Agency','Independence'],
+    datasets:[{ data:[50,49,42,37,31,24,22,22],
+      backgroundColor:'#4DA6FF', borderRadius:4, borderSkipped:false }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false, indexAxis:'y',
+    plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>' '+c.parsed.x+' slots'},
+      backgroundColor:'#1B2F45', titleColor:'#F0F4F8', bodyColor:'rgba(240,244,248,0.7)', borderColor:'rgba(255,255,255,0.1)', borderWidth:1}},
+    scales:{
+      x:{grid:{color:gridC}, border:{display:false}, ticks:{color:txtC, font:{family:'DM Mono',size:11}}},
+      y:{grid:{display:false}, border:{display:false}, ticks:{color:'rgba(240,244,248,0.75)', font:{family:'DM Sans',size:11}}}
+    }
+  }
+});
+</script>
+</body>
+</html>

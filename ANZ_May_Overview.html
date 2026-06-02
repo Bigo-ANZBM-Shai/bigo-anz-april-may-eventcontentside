@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIGO Live ANZ · May 2026 Overview</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#0D1B2A;--navy2:#1B2F45;--navy3:#243B55;--accent:#00C9A7;
+  --gold:#FFB627;--coral:#FF6B6B;--blue:#4DA6FF;--purple:#A78BFA;
+  --brown:#D4956A;--white:#F0F4F8;--muted:rgba(240,244,248,0.5);
+  --border:rgba(255,255,255,0.08);
+  --nss:#4DA6FF;--tls:#00C9A7;--stgn:#A78BFA;--tlh:#D4956A;--mnf:#FF6B6B;
+}
+body{background:var(--navy);color:var(--white);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.5;}
+
+.header{background:var(--navy2);border-bottom:1px solid var(--border);padding:24px 36px 20px;display:flex;align-items:flex-end;justify-content:space-between;}
+.eyebrow{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:5px;}
+.title{font-size:26px;font-weight:600;color:var(--white);line-height:1.15;}
+.subtitle{font-size:12px;color:var(--muted);margin-top:3px;font-style:italic;}
+.badge{display:inline-block;background:rgba(0,201,167,.15);color:var(--accent);border:1px solid rgba(0,201,167,.3);border-radius:20px;padding:3px 13px;font-size:12px;font-weight:500;margin-bottom:3px;}
+.header-meta{font-size:11px;color:var(--muted);}
+
+.main{padding:24px 36px 36px;display:grid;gap:18px;}
+
+/* KPI strip */
+.kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.kpi{background:var(--navy2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;border-top:3px solid var(--accent);transition:transform .15s;}
+.kpi:hover{transform:translateY(-2px);}
+.kpi.nss{border-top-color:var(--nss);} .kpi.tls{border-top-color:var(--tls);}
+.kpi.stgn{border-top-color:var(--stgn);} .kpi.tlh{border-top-color:var(--tlh);}
+.kpi.mnf{border-top-color:var(--mnf);}
+.kpi-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.kpi-number{font-size:24px;font-weight:600;color:var(--white);line-height:1;margin-bottom:3px;font-family:'DM Mono',monospace;}
+.kpi-sub{font-size:11px;color:var(--muted);}
+.kpi-beans{font-size:12px;font-weight:500;margin-top:3px;}
+.kpi.nss .kpi-beans{color:var(--nss);} .kpi.tls .kpi-beans{color:var(--tls);}
+.kpi.stgn .kpi-beans{color:var(--stgn);} .kpi.tlh .kpi-beans{color:var(--tlh);}
+.kpi.mnf .kpi-beans{color:var(--mnf);}
+
+/* Cards */
+.chart-card{background:var(--navy2);border:1px solid var(--border);border-radius:10px;padding:18px;}
+.chart-title{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+.dot.gold{background:var(--gold);} .dot.blue{background:var(--blue);} .dot.coral{background:var(--coral);} .dot.purple{background:var(--purple);}
+.chart-wrap{position:relative;width:100%;}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+
+/* Legend */
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);}
+.legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+
+/* Agency tables */
+.ag-table{width:100%;border-collapse:collapse;margin-top:4px;}
+.ag-table th{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:4px 6px;text-align:left;border-bottom:1px solid var(--border);}
+.ag-table td{font-size:11px;padding:5px 6px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--white);}
+.ag-table td.num{text-align:right;font-family:'DM Mono',monospace;color:var(--muted);}
+.ag-table tr:last-child td{border-bottom:none;}
+.rank-num{font-weight:600;color:var(--muted);width:18px;display:inline-block;}
+.ev-pill{display:inline-block;border-radius:4px;padding:1px 7px;font-size:10px;font-weight:600;}
+.ev-nss{background:rgba(77,166,255,.2);color:var(--nss);}
+.ev-tls{background:rgba(0,201,167,.2);color:var(--tls);}
+.ev-stgn{background:rgba(167,139,250,.2);color:var(--stgn);}
+.ev-tlh{background:rgba(212,149,106,.2);color:var(--tlh);}
+.ev-mnf{background:rgba(255,107,107,.2);color:var(--mnf);}
+
+/* Highlights */
+.hl-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.hl{background:var(--navy2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;}
+.hl-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.hl-label{font-size:10px;color:var(--muted);margin-bottom:2px;}
+.hl-value{font-size:13px;font-weight:600;color:var(--white);}
+.hl-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+
+/* Comparison table */
+.cmp-table{width:100%;border-collapse:collapse;}
+.cmp-table th{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:6px 10px;text-align:left;border-bottom:1px solid var(--border);}
+.cmp-table td{font-size:12px;padding:7px 10px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--white);}
+.cmp-table td.num{text-align:right;font-family:'DM Mono',monospace;}
+.cmp-table td.up{color:#00C9A7;} .cmp-table td.dn{color:#FF6B6B;}
+.cmp-table tr:last-child td{border-bottom:none;}
+
+.footer{text-align:center;padding:14px 36px 22px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);}
+
+/* Bar fill helper */
+.bar-bg{background:rgba(255,255,255,0.06);border-radius:4px;height:6px;margin-top:4px;}
+.bar-fill{height:6px;border-radius:4px;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="eyebrow">Bigo Live ANZ · Content Events</div>
+    <div class="title">May 2026 Events Performance Overview</div>
+    <div class="subtitle">Source: ANZ_MAY_DATA.xlsx · May 2026 Event Data Analysis · Generated June 2026</div>
+  </div>
+  <div style="text-align:right;">
+    <div class="badge">5 Events · May 2026</div>
+    <div class="header-meta">158 host appearances · 107 unique hosts · 27 multi-event hosts</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- KPI STRIP -->
+  <div class="kpi-strip">
+    <div class="kpi nss">
+      <div class="kpi-label">🌟 NSS</div>
+      <div class="kpi-number">62</div>
+      <div class="kpi-sub">unique hosts · 166 slots</div>
+      <div class="kpi-beans">44,065 beans</div>
+    </div>
+    <div class="kpi tls">
+      <div class="kpi-label">🎤 TLS</div>
+      <div class="kpi-number">42</div>
+      <div class="kpi-sub">unique hosts · 178 slots</div>
+      <div class="kpi-beans">249,200 beans</div>
+    </div>
+    <div class="kpi stgn">
+      <div class="kpi-label">🌐 STGN</div>
+      <div class="kpi-number">10</div>
+      <div class="kpi-sub">hosts · 21 slots · overseas</div>
+      <div class="kpi-beans">37,828 beans</div>
+    </div>
+    <div class="kpi tlh">
+      <div class="kpi-label">🏠 Themed LH</div>
+      <div class="kpi-number">26</div>
+      <div class="kpi-sub">unique hosts · 25 slots</div>
+      <div class="kpi-beans">21,500 beans</div>
+    </div>
+    <div class="kpi mnf">
+      <div class="kpi-label">👋 MNF</div>
+      <div class="kpi-number">18</div>
+      <div class="kpi-sub">unique hosts · 79 slots</div>
+      <div class="kpi-beans">139,500 beans</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: Top Beans + Top ACU -->
+  <div class="two-col">
+    <div class="chart-card">
+      <div class="chart-title"><span class="dot gold"></span>Top 10 hosts by beans — all events</div>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-dot" style="background:var(--nss)"></span>NSS</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--tls)"></span>TLS</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--stgn)"></span>STGN</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--tlh)"></span>Themed LH</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--mnf)"></span>MNF</span>
+      </div>
+      <div class="chart-wrap" style="height:300px;"><canvas id="beansChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title"><span class="dot blue"></span>Top 10 hosts by ACU — all events</div>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-dot" style="background:var(--tls)"></span>TLS dominates</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--stgn)"></span>STGN</span>
+      </div>
+      <div class="chart-wrap" style="height:300px;"><canvas id="acuChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ROW 2: Event Beans Bar + Agency Slots -->
+  <div class="two-col">
+    <div class="chart-card">
+      <div class="chart-title"><span class="dot"></span>Total beans per event — May 2026</div>
+      <div class="chart-wrap" style="height:200px;"><canvas id="eventBeansChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title"><span class="dot coral"></span>Top 8 agencies by total slots — May 2026</div>
+      <div class="chart-wrap" style="height:200px;"><canvas id="agencyChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ROW 3: Top Agency per Event -->
+  <div class="chart-card">
+    <div class="chart-title"><span class="dot purple"></span>Top agencies per event — by host count &amp; beans earned</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:4px;">
+
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--nss);margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid var(--nss);">🌟 NSS</div>
+        <table class="ag-table">
+          <tr><th>#</th><th>Agency</th><th style="text-align:right;">Hosts</th><th style="text-align:right;">Beans</th></tr>
+          <tr><td><span class="rank-num">1</span></td><td>D WILL</td><td class="num">6</td><td class="num">9,660</td></tr>
+          <tr><td><span class="rank-num">2</span></td><td>Fu Cancer</td><td class="num">6</td><td class="num">5,675</td></tr>
+          <tr><td><span class="rank-num">3</span></td><td>NOYPI</td><td class="num">3</td><td class="num">4,330</td></tr>
+          <tr><td><span class="rank-num">4</span></td><td>THOT Agency</td><td class="num">5</td><td class="num">945</td></tr>
+          <tr><td><span class="rank-num">5</span></td><td>BeeHive</td><td class="num">5</td><td class="num">1,385</td></tr>
+        </table>
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--tls);margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid var(--tls);">🎤 TLS</div>
+        <table class="ag-table">
+          <tr><th>#</th><th>Agency</th><th style="text-align:right;">Hosts</th><th style="text-align:right;">Beans</th></tr>
+          <tr><td><span class="rank-num">1</span></td><td>Black Cats</td><td class="num">8</td><td class="num">36,100</td></tr>
+          <tr><td><span class="rank-num">2</span></td><td>NOYPI</td><td class="num">5</td><td class="num">26,900</td></tr>
+          <tr><td><span class="rank-num">3</span></td><td>Angels & Demons</td><td class="num">4</td><td class="num">25,800</td></tr>
+          <tr><td><span class="rank-num">4</span></td><td>Independence</td><td class="num">3</td><td class="num">15,500</td></tr>
+          <tr><td><span class="rank-num">5</span></td><td>Flash Agency</td><td class="num">2</td><td class="num">4,800</td></tr>
+        </table>
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--stgn);margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid var(--stgn);">🌐 STGN</div>
+        <table class="ag-table">
+          <tr><th>#</th><th>Agency</th><th style="text-align:right;">Hosts</th><th style="text-align:right;">Beans</th></tr>
+          <tr><td><span class="rank-num">1</span></td><td>MGM AGENCY</td><td class="num">3</td><td class="num">13,279</td></tr>
+          <tr><td><span class="rank-num">2</span></td><td>HoneyAgency</td><td class="num">1</td><td class="num">7,761</td></tr>
+          <tr><td><span class="rank-num">3</span></td><td>Golden Dawn</td><td class="num">1</td><td class="num">7,114</td></tr>
+          <tr><td><span class="rank-num">4</span></td><td>Flash Agency</td><td class="num">2</td><td class="num">1,544</td></tr>
+          <tr><td><span class="rank-num">5</span></td><td>Angels & Demons</td><td class="num">1</td><td class="num">1,500</td></tr>
+        </table>
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--tlh);margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid var(--tlh);">🏠 Themed LH</div>
+        <table class="ag-table">
+          <tr><th>#</th><th>Agency</th><th style="text-align:right;">Hosts</th><th style="text-align:right;">Beans</th></tr>
+          <tr><td><span class="rank-num">1</span></td><td>D WILL</td><td class="num">5</td><td class="num">4,800</td></tr>
+          <tr><td><span class="rank-num">2</span></td><td>Savage Agency</td><td class="num">2</td><td class="num">3,200</td></tr>
+          <tr><td><span class="rank-num">3</span></td><td>Kainos Life</td><td class="num">3</td><td class="num">2,400</td></tr>
+          <tr><td><span class="rank-num">4</span></td><td>Happy Dayze</td><td class="num">2</td><td class="num">1,600</td></tr>
+          <tr><td><span class="rank-num">5</span></td><td>GUCCI</td><td class="num">2</td><td class="num">1,600</td></tr>
+        </table>
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--mnf);margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid var(--mnf);">👋 MNF</div>
+        <table class="ag-table">
+          <tr><th>#</th><th>Agency</th><th style="text-align:right;">Hosts</th><th style="text-align:right;">Beans</th></tr>
+          <tr><td><span class="rank-num">1</span></td><td>D WILL</td><td class="num">2</td><td class="num">17,900</td></tr>
+          <tr><td><span class="rank-num">2</span></td><td>Savage Agency</td><td class="num">2</td><td class="num">17,500</td></tr>
+          <tr><td><span class="rank-num">3</span></td><td>NOYPI</td><td class="num">2</td><td class="num">17,200</td></tr>
+          <tr><td><span class="rank-num">4</span></td><td>Angels & Demons</td><td class="num">2</td><td class="num">11,200</td></tr>
+          <tr><td><span class="rank-num">5</span></td><td>Rainbow Factory</td><td class="num">2</td><td class="num">8,000</td></tr>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ROW 4: April vs May comparison + highlights -->
+  <div class="two-col">
+    <div class="chart-card">
+      <div class="chart-title"><span class="dot gold"></span>April vs May — beans comparison per event</div>
+      <div class="chart-wrap" style="height:200px;"><canvas id="compareChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title"><span class="dot"></span>April vs May — unique hosts per event</div>
+      <div class="chart-wrap" style="height:200px;"><canvas id="hostsCompareChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- HIGHLIGHTS -->
+  <div class="hl-strip">
+    <div class="hl">
+      <div class="hl-icon" style="background:rgba(0,201,167,.15);">👁️</div>
+      <div>
+        <div class="hl-label">Highest ACU — May</div>
+        <div class="hl-value">FJ76 · TLS</div>
+        <div class="hl-sub">18,019 ACU · Blue Sapphire Agency</div>
+      </div>
+    </div>
+    <div class="hl">
+      <div class="hl-icon" style="background:rgba(167,139,250,.15);">🫘</div>
+      <div>
+        <div class="hl-label">Highest beans — May</div>
+        <div class="hl-value">4-way tie at 10,800</div>
+        <div class="hl-sub">bebong2316 (TLS/MNF), Qtpie29, FJ76</div>
+      </div>
+    </div>
+    <div class="hl">
+      <div class="hl-icon" style="background:rgba(255,182,39,.15);">🏆</div>
+      <div>
+        <div class="hl-label">Most profitable event</div>
+        <div class="hl-value">TLS · 249,200 beans</div>
+        <div class="hl-sub">Black Cats Agency leads with 36,100</div>
+      </div>
+    </div>
+    <div class="hl">
+      <div class="hl-icon" style="background:rgba(77,166,255,.15);">🌟</div>
+      <div>
+        <div class="hl-label">Most versatile host</div>
+        <div class="hl-value">Yumi012024</div>
+        <div class="hl-sub">4 events · HoneyAgency</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  BIGO Live ANZ · Events Content Team · May 2026 · Data: ANZ_MAY_DATA.xlsx · 107 unique hosts · 158 appearances
+</div>
+
+<script>
+const EV = {NSS:'#4DA6FF',TLS:'#00C9A7',STGN:'#A78BFA','Themed LH':'#D4956A',MNF:'#FF6B6B'};
+const gridC='rgba(255,255,255,0.07)', txtC='rgba(240,244,248,0.55)';
+const tipCfg={backgroundColor:'#1B2F45',titleColor:'#F0F4F8',bodyColor:'rgba(240,244,248,0.7)',borderColor:'rgba(255,255,255,0.1)',borderWidth:1};
+
+const beansD=[
+  {l:'bebong2316 (TLS)', v:10800,ev:'TLS'},{l:'Qtpie29 (TLS)',   v:10800,ev:'TLS'},
+  {l:'FJ76 (TLS)',       v:10800,ev:'TLS'},{l:'Bebong2316 (MNF)',v:10800,ev:'MNF'},
+  {l:'Laycedup (TLS)',   v:10500,ev:'TLS'},{l:'AuntyReal61 (MNF)',v:10300,ev:'MNF'},
+  {l:'718906231 (TLS)',  v:10200,ev:'TLS'},{l:'CLIMBASE (TLS)',  v:10200,ev:'TLS'},
+  {l:'Yumi012024 (MNF)', v:10200,ev:'MNF'},{l:'HelloKitty9 (MNF)',v:10200,ev:'MNF'},
+];
+new Chart(document.getElementById('beansChart'),{type:'bar',data:{labels:beansD.map(d=>d.l),datasets:[{data:beansD.map(d=>d.v),backgroundColor:beansD.map(d=>EV[d.ev]),borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.parsed.x.toLocaleString()+' beans'},...tipCfg}},scales:{x:{grid:{color:gridC},border:{display:false},ticks:{color:txtC,font:{family:'DM Mono',size:10},callback:v=>v>=1000?(v/1000).toFixed(0)+'k':v}},y:{grid:{display:false},border:{display:false},ticks:{color:'rgba(240,244,248,0.75)',font:{family:'DM Sans',size:10}}}}}});
+
+const acuD=[
+  {l:'FJ76 (TLS)',         v:18019,ev:'TLS'},{l:'bebong2316 (STGN)', v:17804,ev:'STGN'},
+  {l:'bebong2316 (TLS)',   v:16794,ev:'TLS'},{l:'Qtpie29 (TLS)',     v:14894,ev:'TLS'},
+  {l:'Laycedup (TLS)',     v:12856,ev:'TLS'},{l:'AuntyReal61 (TLS)', v:12442,ev:'TLS'},
+  {l:'718906231 (TLS)',    v:11665,ev:'TLS'},{l:'Uolanna82 (TLS)',   v:8683,ev:'TLS'},
+  {l:'independ3nt (TLS)',  v:8348,ev:'TLS'},{l:'CLIMBASE (TLS)',    v:8145,ev:'TLS'},
+];
+new Chart(document.getElementById('acuChart'),{type:'bar',data:{labels:acuD.map(d=>d.l),datasets:[{data:acuD.map(d=>d.v),backgroundColor:acuD.map(d=>EV[d.ev]),borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.parsed.x.toLocaleString()+' ACU'},...tipCfg}},scales:{x:{grid:{color:gridC},border:{display:false},ticks:{color:txtC,font:{family:'DM Mono',size:10},callback:v=>v>=1000?(v/1000).toFixed(0)+'k':v}},y:{grid:{display:false},border:{display:false},ticks:{color:'rgba(240,244,248,0.75)',font:{family:'DM Sans',size:10}}}}}});
+
+new Chart(document.getElementById('eventBeansChart'),{type:'bar',data:{labels:['TLS','MNF','NSS','STGN','Themed LH'],datasets:[{data:[249200,139500,44065,37828,21500],backgroundColor:['#00C9A7','#FF6B6B','#4DA6FF','#A78BFA','#D4956A'],borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.parsed.y.toLocaleString()+' beans'},...tipCfg}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:'rgba(240,244,248,0.75)',font:{family:'DM Sans',size:11}}},y:{grid:{color:gridC},border:{display:false},ticks:{color:txtC,font:{family:'DM Mono',size:10},callback:v=>v>=1000?(v/1000).toFixed(0)+'k':v}}}}});
+
+new Chart(document.getElementById('agencyChart'),{type:'bar',data:{labels:['D WILL','NOYPI','Black Cats','Angels & D','Savage','Independence','GUCCI','Fu Cancer'],datasets:[{data:[58,37,32,30,30,22,19,19],backgroundColor:'#4DA6FF',borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.parsed.x+' slots'},...tipCfg}},scales:{x:{grid:{color:gridC},border:{display:false},ticks:{color:txtC,font:{family:'DM Mono',size:10}}},y:{grid:{display:false},border:{display:false},ticks:{color:'rgba(240,244,248,0.75)',font:{family:'DM Sans',size:10}}}}}});
+
+new Chart(document.getElementById('compareChart'),{type:'bar',data:{labels:['NSS','TLS','STGN','Themed LH','MNF'],datasets:[{label:'April',data:[59115,251100,37502,51100,123200],backgroundColor:'rgba(77,166,255,0.5)',borderRadius:3,borderSkipped:false},{label:'May',data:[44065,249200,37828,21500,139500],backgroundColor:['#4DA6FF','#00C9A7','#A78BFA','#D4956A','#FF6B6B'],borderRadius:3,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:txtC,font:{family:'DM Sans',size:10}},position:'top'},tooltip:{callbacks:{label:c=>' '+c.dataset.label+': '+c.parsed.y.toLocaleString()+' beans'},...tipCfg}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:'rgba(240,244,248,0.75)',font:{family:'DM Sans',size:10}}},y:{grid:{color:gridC},border:{display:false},ticks:{color:txtC,font:{family:'DM Mono',size:10},callback:v=>v>=1000?(v/1000).toFixed(0)+'k':v}}}}});
+
+new Chart(document.getElementById('hostsCompareChart'),{type:'bar',data:{labels:['NSS','TLS','STGN','Themed LH','MNF'],datasets:[{label:'April',data:[70,50,9,44,19],backgroundColor:'rgba(77,166,255,0.5)',borderRadius:3,borderSkipped:false},{label:'May',data:[62,42,10,26,18],backgroundColor:['#4DA6FF','#00C9A7','#A78BFA','#D4956A','#FF6B6B'],borderRadius:3,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:txtC,font:{family:'DM Sans',size:10}},position:'top'},tooltip:{callbacks:{label:c=>' '+c.dataset.label+': '+c.parsed.y+' hosts'},...tipCfg}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:'rgba(240,244,248,0.75)',font:{family:'DM Sans',size:10}}},y:{grid:{color:gridC},border:{display:false},ticks:{color:txtC,font:{family:'DM Mono',size:10}}}}}});
+</script>
+</body>
+</html>
